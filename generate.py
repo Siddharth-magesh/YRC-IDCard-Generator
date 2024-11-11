@@ -10,6 +10,13 @@ init(autoreset=True)
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
+def draw_bold_text(draw, position, text, font, color='black'):
+    # Define small offsets to simulate a bold effect
+    offsets = [(-1, -1), (-1, 1), (1, -1), (1, 1), (0, 0)]
+    for offset in offsets:
+        x, y = position[0] + offset[0], position[1] + offset[1]
+        draw.text((x, y), text, font=font, fill=color)
+
 def generate_id_card():
     # Load template and font settings
     template_path = config.template_path
@@ -49,7 +56,10 @@ def generate_id_card():
         # Draw text onto the template
         draw = ImageDraw.Draw(template)
         for text, position in text_details:
-            draw.text(position, text, font=font, fill='black')
+            if config.bold:
+                draw_bold_text(draw, position, text, font, color='black')
+            else:
+                draw.text(position, text, font=font, fill='black')
 
         # Save the generated ID card
         file_name = f"{yrc_id}_IDCARD.png"
